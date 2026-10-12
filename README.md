@@ -1,8 +1,8 @@
-# Average Filtering Using OpenCV
+# gray level slicing
 
 ## Output:
 
-The output below shows the original image and the result obtained using a 3×3 average filter.
+The output below shows the original image and the result obtained using a gray level slicing.
 
 !["Average Filtering Output"](output.png)
 
