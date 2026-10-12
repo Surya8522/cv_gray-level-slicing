@@ -1,22 +1,49 @@
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-img1 = cv2.imread("img1.jpg", 0)
+from matplotlib import pyplot as plt
+def process_and_show_image_slices():
+  rmin = 100
+  rmax = 200
 
-kernel = np.ones((3,3)) * 1/9
+  img = cv2.imread("i.jpg", 0)
+  if img is None:
+      print("Error: Could not load image from /content/dead.jpg")
+      return
 
-k_s = 3
+  # Initialize slices based on the original logic's intent
+  slice_with_bg = img.copy() # Keeps original image, but pixels in range will be set to 255
+  slice_without_bg = np.zeros(img.shape, dtype=np.uint8) # Binary image for pixels in range
 
-m = img1.shape[0]
+  for i in range(img.shape[0]):
+    for j in range(img.shape[1]):
+      pixel_value = img[i,j]
+      if rmin <= pixel_value <= rmax:
+        slice_with_bg[i,j] = 255  # Max out pixels within range in this slice
+        slice_without_bg[i,j] = 255 # Set to white for binary slice
+      else:
+        # slice_with_bg[i,j] remains its original value from img.copy()
+        slice_without_bg[i,j] = 0 # Set to black for binary slice
 
-x = img1.shape[1]
+  # Display the results
+  plt.figure(figsize=(15, 5))
 
-filtered_image = np.zeros((m,x))
+  plt.subplot(1, 3, 1)
+  plt.imshow(img, cmap='gray')
+  plt.title('Original Image')
+  plt.axis('off')
 
-for i in range(0, m-k_s+1):
-    for j in range(0, x-k_s+1):
-        filtered_image[i][j] = np.sum(kernel * img1[i:i+k_s, j:j+k_s])
+  plt.subplot(1, 3, 2)
+  plt.imshow(slice_with_bg, cmap='gray')
+  plt.title(f'Slice with Background (range [{rmin},{rmax}] pixels maxed)')
+  plt.axis('off')
 
-plt.imshow(filtered_image, cmap='gray')
+  plt.subplot(1, 3, 3)
+  plt.imshow(slice_without_bg, cmap='gray')
+  plt.title(f'Slice Without Background (range [{rmin},{rmax}] only)')
+  plt.axis('off')
 
-plt.show()
+  plt.tight_layout()
+  plt.show()
+
+# Call the function without arguments, as it handles image loading internally
+process_and_show_image_slices()
